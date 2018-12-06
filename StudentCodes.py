@@ -1,18 +1,7 @@
 import re
 import PySimpleGUI as sg
 
-
-
-
-layout = [  [sg.Txt('Enter Roster')],      
-            [sg.Multiline(size=(100,20), key='emails')], 
-            [sg.Txt('Enter Codes')],      
-            [sg.Multiline(size=(100,20), key='Codes')],    
-         
-            [sg.Button('Submit', bind_return_key=True), sg.Button('Cancel', bind_return_key=False)] ]
-
-window = sg.Window('Math').Layout(layout)
-
+# Variable definitions
 emails = set()
 codes = set()
 output = ""
@@ -20,6 +9,20 @@ OK = True
 semiMail = ""
 commaMail = ""
 
+
+# pySimpleGUI syntax has you enter a layout where it loops through a list of the lists, each one f which has comma seperated objects
+# that are displayed in order
+layout = [  [sg.Txt('Enter Roster')],      
+            [sg.Multiline(size=(100,20), key='emails')], 
+            [sg.Txt('Enter Codes')],      
+            [sg.Multiline(size=(100,20), key='Codes')],    
+         
+            [sg.Button('Submit', bind_return_key=True), sg.Button('Cancel', bind_return_key=False)] ]
+
+# Actually launches the window
+window = sg.Window('StudentCodes').Layout(layout)
+
+# Main loop, polls for new events in window:
 while True:      
     event, values = window.Read()
 
@@ -37,14 +40,19 @@ while True:
         except:
             OK = False
 
-    
+        aemails = sorted(emails)
+        i=1
         for email in emails:
             code = codes.pop()
             semiMail += email + "; "
             commaMail += email + ", "
-           # print(email, code)
-            myString = (email + ":\t\t" + code + "\n")
-            #output.append(myString)
+
+            if len(emails) < 100:
+                pad = 2
+            else:
+                pad = 3
+            myString = "{0}. {1}           {2}\n".format(str(i).zfill(pad), email, code)
+            i += 1
             output += myString
     if OK is True: 
         commaMail.rstrip()
